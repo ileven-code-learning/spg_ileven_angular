@@ -1,0 +1,33 @@
+<p>agregar {{name}}</p>
+
+<input type="text"   [(ngModel)]="name" name="name"/>
+      <button  (click)="store()">Guardar</button>
+
+<table border="1">
+    <thead>
+      <th>Nombre</th>
+      <th>Eliminar</th>
+      <th>Editar</th>
+    </thead>
+    <tbody>
+        <tr *ngFor="let item of names; let i = index">
+            <div *ngIf="i !== editingIndex">
+                {{item}}
+              </div>
+              <div *ngIf="i === editingIndex">
+                <input type="text" [(ngModel)]="editingItem">
+              </div>
+            <td>
+                <button (click)="deleteItem(i)">Eliminar</button>
+            </td>
+
+            <td>
+                 
+                <button (click)="editItem(item, i)">Editar</button>
+                <button *ngIf="i === editingIndex" (click)="saveItem()">Guardar</button>
+            </td>
+          </tr>
+        
+    </tbody>
+</table>   
+
