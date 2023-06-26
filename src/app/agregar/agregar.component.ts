@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import axios from 'axios';
+import { User } from './user.interface';
 
 @Component({
   selector: 'app-agregar',
@@ -8,25 +9,61 @@ import axios from 'axios';
 })
 export class AgregarComponent {
   protected name : string;
-  protected names : any;
-  protected editingItem: string;
+  protected names: string[] = [];
+  protected users: any[] = [];
+  protected editingItem: any;
   protected editingIndex: number;
+  protected apiUrl: string = 'http://localhost:8078/app';
+  protected getEnpointUsers: string = '/users';
+  protected newUser!: User;
+  
+
+  ngOnInit(): void {
+    this.getData();
+  }
+
+  
+
+  
+
   constructor(){
     this.name = "";
     this.names = [];
+    this.users = [];
+
     this.editingItem = "";
     this.editingIndex = -1;
     
   }
   public store():void {
+    const newUser: User = {
+      name: this.name,
+      email: "prueba@example.com",
+      userType: {
+        id: 1
+      }
+    };
+    axios.post(`${this.apiUrl}${this.getEnpointUsers}`, newUser)
+      .then(response => {
+        alert("Elemento fue agregado  con éxito");
+         this.getData();
+      })
+      .catch(error => {
+        console.error(error);
+      });
 
-     this.names.push(this.name);
+     
   }
   getData(): void {
-    axios.get('https://api.example.com/data')
+    axios.get(this.apiUrl+this.getEnpointUsers)
       .then(response => {
         const data = response.data;
-        console.log(data);
+        this.names = data.map((item: any) => item.name);
+        this.users = data.map((item: any) => item);
+        
+    
+        console.log("usarios:", this.users); 
+     
       })
       .catch(error => {
         console.error(error);
@@ -34,16 +71,36 @@ export class AgregarComponent {
   }
   
   deleteItem(index: number): void {
-    this.names.splice(index, 1);
+    axios.delete(`${this.apiUrl}${this.getEnpointUsers}/${index}`)
+    .then(response => {
+      alert("Elemento eliminado con éxito");
+      this.getData();
+      // Realizar acciones adicionales después de la eliminación
+    })
+    .catch(error => {
+      console.error(error);
+    })
   }
-  editItem(item: string, index: number): void {
+  editItem(item: any, index: number): void {
     this.editingItem = item;
     this.editingIndex = index;
   }
+
   saveItem(): void {
-    this.names[this.editingIndex] = this.editingItem; // Actualiza el valor del elemento en la lista
-    this.editingIndex = -1; // Restablece el índice de edición a su valor inicial
-    this.editingItem = ''; // Restablece el valor de edición a su valor inicial
+    console.log(this.editingItem);
+    this.editingIndex = -1;
+    
+    const updateUser  = {
+      name: this.editingItem.name,
+    }
+    axios.put(`${this.apiUrl}${this.getEnpointUsers}/${this.editingItem.id}`, updateUser)
+    .then(response => {
+      alert("Usuario actualizado:");
+      // Realizar acciones adicionales después de la actualización
+    })
+    .catch(error => {
+      console.error("Error al actualizar el usuario:", error);
+    });
   }
   
   

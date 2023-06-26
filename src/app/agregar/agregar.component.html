@@ -10,15 +10,15 @@
       <th>Editar</th>
     </thead>
     <tbody>
-        <tr *ngFor="let item of names; let i = index">
+        <tr *ngFor="let item of users; let i = index">
             <div *ngIf="i !== editingIndex">
-                {{item}}
+                {{item.name}}
               </div>
               <div *ngIf="i === editingIndex">
-                <input type="text" [(ngModel)]="editingItem">
+                <input type="text" [(ngModel)]="editingItem.name">
               </div>
             <td>
-                <button (click)="deleteItem(i)">Eliminar</button>
+                <button (click)="deleteItem(item.id)">Eliminar</button>
             </td>
 
             <td>
